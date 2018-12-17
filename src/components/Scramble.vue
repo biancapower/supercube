@@ -1,5 +1,5 @@
 <template>
-    <v-layout justify-start align-center column v-if="enabled">
+    <v-layout justify-start align-center column v-if="enabled"  v-on:keyup.space="submit">
         <v-flex xs12 class="card-scramble">
             <v-card v-if="working">
                 <v-card-title>
