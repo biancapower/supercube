@@ -62,9 +62,7 @@ export default class Cross extends Vue {
             return
         }
 
-        if (this.inspection) {
-            this.start()
-        }
+        this.start()
 
         const cubeState = CubeState.from(state)
         this.moves = CubeState.OptimizeMoves([...this.moves, cubeState.lastmove()])

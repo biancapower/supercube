@@ -23,7 +23,7 @@
                             <v-tooltip bottom open-delay="0" v-model="tooltip" activator=".scramble_info">
                                 <span class="subheading">
                                     - <kbd>U</kbd> is <strong>white</strong> and <kbd>F</kbd> is <strong>green</strong><br/>
-                                    - <kbd>{{solveTrigger.join(' ')}}</kbd> to start solve without completing the scramble
+                                    - <kbd>Space</kbd> to start the inspection
                                 </span>
                             </v-tooltip>
                         </v-flex>
@@ -53,16 +53,13 @@ export default class Scramble extends Vue {
     private scramble: string[] = []
     private position = 0
 
-    private solveTrigger = ['R', 'R\'']
-    private triggerBuffer: string[] = []
-    private lastMoveTimestamp = 0
-
     private worker = new Worker()
 
     private mounted() {
         EventHub.$on(Events.cubeState, (state: Uint8Array) => this.onCubeState(state))
         EventHub.$on(Events.cubeSolved, () => this.generateScramble())
         EventHub.$on(Events.solveCancelled, () => this.generateScramble())
+        EventHub.$on(Events.playerReady, () => this.onPlayerReady())
 
         this.worker.onmessage = (event: MessageEvent) => {
             switch (event.data.cmd) {
@@ -84,8 +81,6 @@ export default class Scramble extends Vue {
         }
 
         const cubeState = CubeState.from(state)
-        this.checkTrigger(cubeState)
-
         const expectedState: any = new cubejs()
         expectedState.move(this.scramble.slice(0, this.position + 1).join(' '))
 
@@ -110,6 +105,10 @@ export default class Scramble extends Vue {
         this.enabled = false
     }
 
+    private onPlayerReady(foo) {
+      this.onScrambleCompleted()
+    }
+
     private generateScramble() {
         this.enabled = true
         this.operation = 'Generating scramble...'
@@ -123,21 +122,6 @@ export default class Scramble extends Vue {
 
     private scrambleCompleted() {
         return this.scramble.length > 0 && this.scramble.length === this.position
-    }
-
-    private checkTrigger(state: CubeState) {
-        if (state.lastmove() === this.solveTrigger[this.triggerBuffer.length] && 
-        (this.triggerBuffer.length === 0 || (Date.now() - this.lastMoveTimestamp < 200))) {
-            this.triggerBuffer.push(state.lastmove())
-            if (this.solveTrigger.join('') === this.triggerBuffer.join('')) {
-                this.triggerBuffer = []
-                this.onScrambleCompleted()
-            }
-        } else {
-            this.triggerBuffer = []
-        }
-
-        this.lastMoveTimestamp = Date.now()
     }
 }
 </script>

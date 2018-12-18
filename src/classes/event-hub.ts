@@ -9,6 +9,9 @@ export const Events = {
     cubeConnect: 'cube-connect',
 
     // name: string | [cube name]
+    playerReady: 'player-ready',
+
+    // name: string | [cube name]
     cubeDisconnect: 'cube-disconnect',
 
     // state: Uint8Array | [raw cube state, normally prased with Cube.from(state)]

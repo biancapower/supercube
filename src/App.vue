@@ -120,6 +120,17 @@ export default class App extends Vue {
         EventHub.$on(Events.cfopOll, () => window.setTimeout(() => this.$vuetify.goTo('.card-pll', { offset: -100, duration: 500, easing: 'easeInOutCubic' }), 100))
         EventHub.$on(Events.cfopPll, (state: Uint8Array) => window.setTimeout(() => this.$vuetify.goTo(CubeState.from(state).solved() ? '.card-scramble' : '.card-auf', { offset: -100, duration: 500, easing: 'easeInOutCubic' }), 100))
         EventHub.$on(Events.cubeSolved, () => window.setTimeout(() => this.$vuetify.goTo('.card-scramble', { offset: -100, duration: 500, easing: 'easeInOutCubic' }), 100))
+
+        window.addEventListener('keyup', this.onKeyUp)
+    }
+
+    private onKeyUp(event) {
+      if (event.code === 'Space') {
+        event.preventDefault()
+        EventHub.$emit(Events.playerReady)
+      }
+
+      return true
     }
 
     private onError(e: Error) {
