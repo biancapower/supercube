@@ -75,7 +75,7 @@ import F2L from '@/components/cfop/F2L.vue'
 import OLL from '@/components/cfop/OLL.vue'
 import PLL from '@/components/cfop/PLL.vue'
 import AUF from '@/components/cfop/AUF.vue'
-import CubeState from '@/classes/cube-state';
+import CubeState from '@/classes/cube-state'
 
 @Component({
     components: {
